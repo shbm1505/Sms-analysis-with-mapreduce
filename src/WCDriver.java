@@ -1,3 +1,4 @@
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -17,17 +18,17 @@ public class WCDriver {
 
       // TODO: specify output types
       job.setOutputKeyClass(Text.class);
-      job.setOutputValueClass(IntWritable.class);
+      job.setOutputValueClass(Text.class);
 
       // TODO: specify input and output DIRECTORIES (not files)
-  //    FileInputFormat.setInputPaths(job, new Path("/sms1.csv"));
-   //   FileOutputFormat.setOutputPath(job, new Path("/temp/"));
       FileInputFormat.setInputPaths(job, new Path(args[0]));
-
       FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
       if (!job.waitForCompletion(true))
          return;
    }
 }
+
+
+
 
