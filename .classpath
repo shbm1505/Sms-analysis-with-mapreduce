@@ -178,5 +178,6 @@
 	<classpathentry kind="lib" path="/usr/local/hadoop/share/hadoop/common/hadoop-nfs-2.6.0.jar"/>
 	<classpathentry kind="lib" path="/usr/local/hadoop/share/hadoop/common/hadoop-common-2.6.0.jar"/>
 	<classpathentry kind="lib" path="/home/shuham/Downloads/hbase-0.90.0.jar"/>
+	<classpathentry kind="lib" path="/home/shuham/Downloads/hbase-client-0.98.5-hadoop2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
