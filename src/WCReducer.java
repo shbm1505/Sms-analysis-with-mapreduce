@@ -4,14 +4,15 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.conf.Configuration;
-
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
+import org.apache.hadoop.hbase.mapreduce.TableReducer;
 import org.apache.hadoop.hbase.util.Bytes;
 
 public class WCReducer extends
-      Reducer<Text, Text, Text, Text> {
+      TableReducer<Text, Text,ImmutableBytesWritable> {
 	
 	private IntWritable result = new IntWritable();
       public void reduce(Text key, Text values, Context context) throws IOException
@@ -28,7 +29,10 @@ public class WCReducer extends
     	  String va=arr[3];
     	  String pr=arr[4];
     	  
-    	  Configuration config = HBaseConfiguration.create();
+    	  Put put = new Put(Bytes.toBytes(key.toString()));
+  		put.add(Bytes.toBytes("cf"), Bytes.toBytes("count"), Bytes.toBytes(i));
+    	  
+    /*	  Configuration config = HBaseConfiguration.create();
 
           
           HTable hTable = new HTable(config, "smslogs");
@@ -44,10 +48,10 @@ public class WCReducer extends
           
           hTable.put(p);
           // closing HTable
-          hTable.close();
+          hTable.close();*/
     	  
     	  try {
-			context.write(null,put);
+			context.write(smskey,put);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
