@@ -1,5 +1,8 @@
 import java.io.IOException;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -17,21 +20,201 @@ public class WCMapper extends Mapper<LongWritable, Text, Text, Text>
             //taking one line at a time from input file and tokenizing the same
     	 
     	    
-            String line = value.toString();
-            String[] sms = line.split("\\|");
-      	    String smsText=sms[13];
-      	    String smsid=sms[0];
-      	    String time=sms[10];
-      	    String phoneno=sms[3];
-      	   
-      	    int priority=0;
+    	String line = value.toString();
+        String[] sms = line.split("\\|");
+      	String smsText=sms[13];
+      	String smsid=sms[0];
+      	String time=sms[10];
+      	String phoneno=sms[3];
+	    String userid=sms[2];
+	    String circle=sms[9];
+
+
+	    int priority=0;
       	    String val=" ";
       	    String attribute=" ";
       	    
       	    String st=smsText.toLowerCase();
+            st=st+" ";
       	    String[] substring=st.split(" ");
-      	    
-      	    if(st.startsWith("dear mr.")||st.startsWith("dear sir")||st.startsWith("dear mr.")||st.startsWith("dear salesperson")||st.startsWith("dear mr."))
+      	 
+
+	Map<String, List<String>> map = new HashMap<String, List<String>>();                //finding location attribute
+ 
+        // create list one and store values
+    List<String> valSetOne = new ArrayList<String>();
+    valSetOne.add("pune");
+    valSetOne.add("nagpur");
+ 
+        // create list two and store values
+    List<String> valSetTwo = new ArrayList<String>();
+    valSetTwo.add("udaipur");
+    valSetTwo.add("jaipur");
+	valSetTwo.add("ajmer");
+	valSetTwo.add("bikaner");
+ 
+        // create list three and store values
+    List<String> valSetThree = new ArrayList<String>();
+    valSetThree.add("bangalore");
+	valSetThree.add("mysore");
+    valSetThree.add("ooty");
+
+	List<String> valSetFour = new ArrayList<String>();
+    valSetThree.add("patna");
+	valSetThree.add("muzzafarnagar");
+        
+	List<String> valSetFive = new ArrayList<String>();
+    valSetThree.add("ludhiana");
+	valSetThree.add("patiala");
+    valSetThree.add("bhatinda");
+	valSetThree.add("hoshiyarpur");
+
+	List<String> valSetSix = new ArrayList<String>();
+    valSetThree.add("bhubaneswar");
+	valSetThree.add("cuttack");
+        
+	List<String> valSetSeven = new ArrayList<String>();
+    valSetThree.add("coimbatore");
+	valSetThree.add("madurai");
+        
+    List<String> valSetEight = new ArrayList<String>();
+    valSetThree.add("durgapur");
+	valSetThree.add("howrah");
+
+	List<String> valSetNine = new ArrayList<String>();
+        valSetThree.add("surat");
+	valSetThree.add("ahmedabad");
+	valSetThree.add("gandhinagar");
+	valSetThree.add("rajkot");
+        
+        
+        // put values into map
+    map.put("Maharashtra", valSetOne);
+    map.put("Rajasthan", valSetTwo);
+    map.put("Karnataka", valSetThree);
+	map.put("Bihar", valSetFour);
+	map.put("Punjab", valSetFive);
+	map.put("Orissa", valSetSix);
+	map.put("Tamilnadu", valSetSeven);
+	map.put("WestBengal", valSetEight);
+	map.put("Gujarat", valSetNine);
+
+	
+        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+            String keyss = entry.getKey();
+	    if(circle==keyss)
+	    {
+            List<String> values = entry.getValue();
+	    for(String city:values)
+	    {
+            if(st.contains(city)==true)
+            {
+	    priority=2;
+	    attribute="location";
+	    val=city;
+	    try {
+				context.write(new Text(smsid), new Text(phoneno+"\t"+time+"\t"+attribute+"\t"+val+"\t"+priority));
+	  	
+			} catch (InterruptedException e) {
+		
+				e.printStackTrace();
+			} 
+		
+	    }
+            }
+	}
+	}
+ 
+	if(st.contains("credit card") || st.contains("creditcard"))                            // credit card attribute
+	{
+	priority=1;
+	attribute="credit card";
+	val="Yes";
+	try {
+			context.write(new Text(smsid), new Text(phoneno+"\t"+time+"\t"+attribute+"\t"+val+"\t"+priority));
+	
+		} catch (InterruptedException e) {
+	
+			e.printStackTrace();
+		} 
+
+	}
+
+	if(st.contains("life insurance"))                                                     //life insurance
+	{
+	priority=1;
+	attribute="life insurance";
+	val="Yes";
+	try {
+			context.write(new Text(smsid), new Text(phoneno+"\t"+time+"\t"+attribute+"\t"+val+"\t"+priority));
+	
+		} catch (InterruptedException e) {
+	
+			e.printStackTrace();
+		} 
+
+	}
+
+	if(st.contains("health insurance") || st.contains("medical insurance") || userid=="religarexml"))
+	{
+	priority=1;
+	attribute="health insurance";
+	val="Yes";
+	try {
+			context.write(new Text(smsid), new Text(phoneno+"\t"+time+"\t"+attribute+"\t"+val+"\t"+priority));
+	
+		} catch (InterruptedException e) {
+	
+			e.printStackTrace();
+		} 
+
+	}
+
+	if(st.contains("mutual fund"))                                                     //mutual fund
+	{
+	priority=1;
+	attribute="mutual fund";
+	val="Yes";
+	try {
+			context.write(new Text(smsid), new Text(phoneno+"\t"+time+"\t"+attribute+"\t"+val+"\t"+priority));
+	
+		} catch (InterruptedException e) {
+	
+			e.printStackTrace();
+		} 
+
+	}
+
+	if(st.contains("Home Loan"))                                                     //home loan
+	{
+	priority=1;
+	attribute="home loan";
+	val="Yes";
+	try {
+			context.write(new Text(smsid), new Text(phoneno+"\t"+time+"\t"+attribute+"\t"+val+"\t"+priority));
+	
+		} catch (InterruptedException e) {
+	
+			e.printStackTrace();
+		} 
+
+	}
+
+	if(st.contains("internet banking") || st.contains("inter net bkg.") || st.contains("netbanking") || st.contains("e_banking") || st.contains("net banking"))      // net banking
+	{
+	priority=1;
+	attribute="net banking";
+	val="Yes";
+	try {
+			context.write(new Text(smsid), new Text(phoneno+"\t"+time+"\t"+attribute+"\t"+val+"\t"+priority));
+	
+		} catch (InterruptedException e) {
+	
+			e.printStackTrace();
+		} 
+
+	}
+      	    if(st.startsWith("dear mr.")||st.startsWith("dear sir")||st.startsWith("dear mr.")||st.startsWith("dear salesperson")||st.startsWith("dear mr."))// gender attribute
       	    {
       	    	priority=1;
       	    	val="male";
@@ -121,11 +304,13 @@ public class WCMapper extends Mapper<LongWritable, Text, Text, Text>
     				e.printStackTrace();
     			} 
     	    }
+      	    
       	else if(st.startsWith("aur mote")||st.startsWith("aur londe"))
  	    {
  	    	priority=1;
  	    	val="male";
  	    	attribute="gender";
+ 	    	
  	    	try {
  				context.write(new Text(smsid), new Text(phoneno+"\t"+time+"\t"+attribute+"\t"+val+"\t"+priority));
  	  	
@@ -147,8 +332,9 @@ public class WCMapper extends Mapper<LongWritable, Text, Text, Text>
  		
  				e.printStackTrace();
  			} 
+ 	    	
  	    }
-  /*    	else if((st.startsWith("dear")||st.startsWith("hi")||st.startsWith("hello")||st.startsWith("hey"))&&(substring[1]!="customer")&&(substring[1]!="executive")&&(substring[1]!="student")){
+      	else if((st.startsWith("dear")||st.startsWith("hi")||st.startsWith("hello")||st.startsWith("hey"))&&(substring[1]!="customer")&&(substring[1]!="executive")&&(substring[1]!="student")){
       		
       	int	l=substring[1].length();
       	if(substring[1].charAt(l-1)=='a'||substring[1].charAt(l-1)=='e'||substring[1].charAt(l-1)=='i'||substring[1].charAt(l-1)=='o'||substring[1].charAt(l-1)=='u')
@@ -157,11 +343,15 @@ public class WCMapper extends Mapper<LongWritable, Text, Text, Text>
       		val="male";
       	attribute="gender";
       	priority=2;
-      	    	    }*/
-      	    
-      	    
-     
-  		
+      	
+      	try {
+			context.write(new Text(smsid), new Text(phoneno+"\t"+time+"\t"+attribute+"\t"+val+"\t"+priority));
+  	
+		} catch (InterruptedException e) {
+	
+			e.printStackTrace();
+		} 
+      	    	    }
     
             
        }
